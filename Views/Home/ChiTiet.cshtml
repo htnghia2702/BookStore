@@ -1,0 +1,61 @@
+﻿
+@model BookStore.Models.Sach
+<br />
+<div>
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <b>THÔNG TIN CHI TIẾT</b>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-4 text-center">
+                    <img src="~/Bia_sach/@Model.AnhBia" width="150" alt="Alternate Text" />
+                </div>
+                <div class="col-sm-8">
+                    <ul class="thongtin">
+                        <li><h4><b>@Model.TenSach</b></h4></li>
+                        <li>Chủ đề:<b> @Model.ChuDe.Tenchude</b></li>
+                        <li>Nhà xuất bản:<b> @Model.NhaXuatBan.TenNXB</b></li>
+                        <li>Mô tả: @Html.Raw(Model.Mota)</li>
+                    </ul>
+                    <br />
+                    <a href="#" id="addCart" data-id="@Model.MaSach" class="btn btn-danger"><span class="glyphicon glyphicon-shopping-cart"></span>Thêm vào giỏ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Action("SachLienQuan","Home",new {MaCD = Model.MaCD,MaSach = Model.MaSach})
+</div>
+@section Scripts{
+    <script>
+        $(function () {
+            $("#addCart").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Cart/addCart",
+                    data: {
+                        MaSach: $("#addCart").data("id"),
+                        SL: 1,
+                        ac: "add"
+                    },
+                    success: function (text) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Thêm "Mã sách: '+text+'" thành công',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        $("#cartCount").html("@(Convert.ToInt32(Session["count"]) + 1)");
+                    }, error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: 'Thêm thất bại !',                         
+                        })
+                    }
+                });
+            });
+        });
+    </script>
+}

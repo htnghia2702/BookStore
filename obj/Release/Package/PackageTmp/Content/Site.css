@@ -1,0 +1,54 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+.count{
+    width:20px;
+    height:20px;
+    text-align:center;
+    display:inline-block;
+    background-color: #808080;
+    color:white;
+    border-radius: 45%;
+    
+}
+.thongtin{
+    margin:0;
+    padding:0;
+}
+.thongtin li{
+    list-style-type:none !important;
+    font-size: 15px !important;
+    margin:0;
+    padding: 2px 0;
+}
+input,select{
+    margin:8px 0 !important;
+}
+.tblThem{
+    margin-left:200px;
+}
+.tblThem tr td:nth-child(odd){
+    font-weight:bold;
+    font-size:16px;
+}

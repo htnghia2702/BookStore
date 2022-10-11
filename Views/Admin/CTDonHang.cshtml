@@ -1,0 +1,57 @@
+﻿@model IEnumerable<BookStore.Models.CTDatHang>
+@{
+    ViewBag.Title = "CTDonHang";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+<h2>Thông tin khách hàng</h2>
+<hr />
+@using BookStore.Models;
+@{
+    QLSachBD db = new QLSachBD();
+    int SoDH = (int)Model.Select(s => s.SoDH).FirstOrDefault();
+    var kh = db.DonDatHangs.Find(SoDH);
+}
+<div>
+    <h4>Số đơn hàng:&nbsp;&nbsp; <b>@kh.SoDH</b></h4>
+    <h4>Tên khách hàng:&nbsp;&nbsp;<b>@kh.KhachHang.HoTenKH</b></h4>
+    <h4>Điện thoại:&nbsp;&nbsp;<b>@kh.KhachHang.Dienthoai</b></h4>
+    <h4>Email:&nbsp;&nbsp;<b>@kh.KhachHang.Email</b></h4>
+    <h4>Địa Chỉ:&nbsp;&nbsp;<b>@kh.KhachHang.Diachi</b></h4>
+</div>
+<hr />
+<h2>Chi tiết đơn hàng</h2>
+<br />
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Mã sách</th>
+            <th>Tên Sách</th>
+            <th>Hình Ảnh</th>
+            <th>Đơn giá</th>
+            <th>Số Lượng</th>
+            <th>Thành Tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaSach</td>
+                <td>@item.Sach.TenSach</td>
+                <td>
+                    <img src="~/Bia_sach/@item.Sach.AnhBia" width="100" alt="Alternate Text" />
+                </td>
+                <td>@Html.FormatValue(item.Dongia, "{0:#,##} đồng")</td>
+                <td>@item.Soluong</td>
+                <td>@Html.FormatValue(item.Thanhtien, "{0:#,##} đồng")</td>
+            </tr>
+        }
+        <tr>
+            <td colspan="6" style="font-size:18px;font-weight:bold">
+                Tổng cộng: @Html.FormatValue(Model.Sum(s => s.Thanhtien), "{0:#,##} đồng")
+            </td>
+        </tr>
+    </tbody>
+</table>
+

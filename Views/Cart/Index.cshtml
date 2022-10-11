@@ -1,0 +1,166 @@
+﻿@model IEnumerable<BookStore.Models.GioHang>
+<div id="cart">
+    @if (Model != null && Model.Count() > 0)
+    {
+        <br />
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <b>GIỎ HÀNG CỦA BẠN</b>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <thead style="font-size:16px;font-weight:bold;">
+                        <tr>
+                            <td>Hình sản phẩm</td>
+                            <td>Tên sản phẩm</td>
+                            <td>Số lượng</td>
+                            <td>Đơn giá</td>
+                            <td>Thành tiền</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><img src="~/Bia_sach/@item.sach.AnhBia" width="100" alt="Alternate Text" /></td>
+                                <td>@item.sach.TenSach</td>
+                                <td>
+                                    <input class="SoLuong" type="number" min="1" max="20" style="width:50px;" value="@item.SoLuong" />
+                                </td>
+                                <td>@Html.FormatValue(item.sach.Dongia, "{0:#,##0} đồng")</td>
+                                <td>
+                                    @(
+                            Html.FormatValue((item.sach.Dongia * item.SoLuong), "{0:#,##0} đồng"))
+                                </td>
+                                <td>
+                                    <button data-id="@item.sach.MaSach" class="btn btn-info CapNhat">
+                                        <span class="glyphicon glyphicon-edit"></span> Cập Nhật
+                                    </button>
+                                    <button data-id="@item.sach.MaSach" class="Xoa btn btn-danger">
+                                        <span class="glyphicon glyphicon-trash"></span> Xoá
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="6" style="text-align:left;font-size:18px;font-weight:bold;padding:20px 0;">
+                                Tổng tiền: @Html.FormatValue(ViewBag.tongTien, "{0:#,##0} đồng")
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <button id="deleteAll" class="btn btn-danger">
+                        Trả toàn bộ
+                    </button>
+                    <a href="@Url.Action("Index","ThanhToan")" class="btn btn-warning">
+                        Đặt hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <br /><br />
+        <h2 class="text-center">Giỏ Hàng Rỗng !</h2>
+    }
+    @section Scripts{
+        <script>
+        $(function () {
+            const dsSach = document.querySelectorAll(".CapNhat");
+            const dsSoLuong = document.getElementsByClassName("SoLuong");
+            const dsDel = document.querySelectorAll(".Xoa");
+            for (let i = 0; i < dsSach.length; i++) {
+                dsSach[i].addEventListener("click", function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Cart/addCart",
+                        data: {
+                            MaSach: dsSach[i].getAttribute("data-id"),
+                            SL: dsSoLuong[i].value,
+                            ac: "update"
+                        },
+                        success: function () {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Cập nhật thành công',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            $("#cart").load("@Url.Action("Index","Cart")");
+                        }, error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: 'Cập nhật thất bại !',
+                            })
+                        }
+                    });
+                });
+            }
+            //xoá 1 item
+            for (let i = 0; i < dsDel.length; i++) {
+                dsDel[i].addEventListener("click", function () {
+                    Swal.fire({
+                        title: 'Bạn muốn xoá ?',
+                        showDenyButton: true,
+                        showCancelButton: false,
+                        confirmButtonText: 'Yes',
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            $.ajax({
+                        type: "POST",
+                        url: "/Cart/DeleteCart",
+                        data: {
+                            MaSach: dsDel[i].getAttribute("data-id"),
+                        },
+                        success: function (text) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Xoá "Mã Sách:'+ text+'" thành công !',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+
+                            $("#cart").load("@Url.Action("Index", "Cart")");
+                            }, error: function () {
+                            Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: 'Xoá thất bại !',
+                            })
+                            }
+                            });
+                        }
+                    })
+                });
+            }
+            //xoá toàn bộ
+            $("#deleteAll").click(function () {
+                Swal.fire({
+                    title: 'Bạn sẽ xoá toàn bộ ?',
+                    showDenyButton: true,
+                    showCancelButton: false,
+                    confirmButtonText: 'Yes',
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/cart/DeleteAll",
+                            success: function () {
+                                 $("#cart").load("@Url.Action("Index","Cart")");
+                            }
+                        });
+                    }
+                })
+            });
+        });
+        </script>
+    }
+</div>

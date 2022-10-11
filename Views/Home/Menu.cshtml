@@ -1,0 +1,13 @@
+﻿@model IEnumerable<BookStore.Models.ChuDe>
+<li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        Danh Mục Sách
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+        @foreach(var item in Model)
+            {
+                <li style="text-transform:uppercase"><a href="@Url.Action("Index","Home",new {MaCD = item.MaCD })"><span class="glyphicon glyphicon-chevron-right"></span> &nbsp; @item.Tenchude &nbsp; <span class="count">@item.Saches.Count()</span></a></li>
+            }
+    </ul>
+</li>

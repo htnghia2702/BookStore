@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+<h2><span class="glyphicon glyphicon-cog"></span> QUẢN TRỊ SẢN PHẨM</h2>
+<hr />
+<div>
+    <div class="form-group form-inline">
+        <input type="text" id="search" value="" placeholder="Nhập tên sản phẩm..." class="form-control" />
+        <button id="tracuu" class="btn btn-success"><span class="glyphicon glyphicon-search"></span> Tra cứu</button>
+        <a href="@Url.Action("ThemSach","Admin")" style="float:right;margin:5px 0;" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>Thêm mới</a>
+    </div>
+</div>
+<div id="results">
+</div>
+<div class="text-center">
+    <ul class="pagination">
+        <li><a href="#">#</a></li>
+        @for (int i = 1; i <= ViewBag.pageCount; i++)
+        {
+            <li><a href="#">@i</a></li>
+        }
+        <li><a href="#">#</a></li>
+    </ul>
+</div>
+@section scripts{
+    <script>
+        //hiển thị giá trị đầu tiên       
+        fload(1);
+        $(".pagination li").click(function () {
+            $(".pagination li").removeClass("active");
+            let page = parseInt($(this).text());
+            $(this).addClass("active");
+            fload(page)
+        })
+        function fload(index) {         
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("List","Admin")",
+                data: { page: index },
+                success: function (response) {
+                    //Hiển thị kết quả
+                    $("#results").html(response);                   
+                }
+            });
+        }
+        //Tìm kiếm bằng ajax             
+        $("#tracuu").click(function () {
+            $(".pagination").hide();
+            $.ajax({
+                type: "POST",
+                url: "/Admin/Search",
+                data: { name: $("#search").val() },
+                success: function (re) {
+                    $("#results").html(re);
+                }
+            });
+        });
+        
+    </script>
+}

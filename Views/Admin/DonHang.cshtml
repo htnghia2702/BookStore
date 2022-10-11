@@ -1,0 +1,130 @@
+﻿@model IEnumerable<BookStore.Models.DonDatHang>
+@{
+    ViewBag.Title = "DonHang";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+<div id="main">
+    <h2>QUẢN LÍ ĐƠN HÀNG</h2>
+    <hr />
+    @if (Model != null && Model.Count() > 0)
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Số đơn hàng</th>
+                    <th>Tên khách hàng</th>
+                    <th>Trị giá</th>
+                    <th>Ngày đặt</th>
+                    <th>Ngày giao</th>
+                    <th>Tình trạng</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="DaGiao">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td width="100">@item.SoDH</td>
+                        <td>@item.KhachHang.HoTenKH</td>
+                        <td>@Html.FormatValue(item.Trigia, "{0:#,##0} đồng")</td>
+                        <td>@Html.FormatValue(item.NgayDH, "{0:dd/MM/yyy}")</td>
+                        <td>@Html.FormatValue(item.Ngaygiao, "{0:dd/MM/yyy}")</td>
+                        <td class="text-center" width="150">
+                            @if (item.Dagiao == false)
+                            {
+                                <input type="checkbox" data-id="@item.SoDH" name="Dagiao" value="1" />
+                                <div class="chuagiao" style="color:red;">
+                                    <span class="glyphicon glyphicon-remove"></span> Chưa giao
+                                </div>                                
+                            }
+                            else
+                            {
+                                <input type="checkbox" data-id="@item.SoDH" id="DaGiao" name="" checked value="" />                                
+                                <div class="dagiao" style="color:#0e6923;">
+                                    <span class="glyphicon glyphicon-ok"></span> Đã giao
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("CTDonHang","Admin",new {SoDH=item.SoDH })" class="btn btn-info"><span class="glyphicon glyphicon-eye-open"></span> Xem</a>
+                            <button data-id="@item.SoDH" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Xoá</button>
+                        </td>
+                    </tr>
+                }
+
+
+
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <br /><br />
+        <h2 class="text-center">Không có đơn hàng !</h2>
+    }
+</div>
+@section scripts{
+    <script>
+        $("#DaGiao input").click(function () {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/TrangThai",
+                data: { SoDH: parseInt($(this).data("id")) },
+                success: function (e) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: ''+e+'',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    $("#main").load("@Url.Action("DonHang", "Admin")");
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi...',
+                        text: 'Cập nhật trạng thái thất bại !',
+                    })
+                }
+            });
+        });
+        //xoá đơn hàng
+        $("#DaGiao button").click(function () {
+            Swal.fire({
+                title: 'Bạn muốn xoá đơn hàng này?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Yes',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Admin/XoaDH",
+                        data: { SoDH: parseInt($(this).data("id")) },
+                        success: function (e) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Xoá đơn hàng ' + e + ' thành công !',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                                $("#main").load("@Url.Action("DonHang", "Admin")");
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi...',
+                                text: 'Xoá đơn hàng thất bại !',
+                            })
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
+        })
+    </script>
+}        

@@ -1,0 +1,41 @@
+﻿<br />
+<div style="width:60%;margin:20px auto;">
+    <h2>Đăng nhập</h2>
+    <hr />
+    <form action="@Url.Action("Index","DangNhap")" method="POST">
+        <table class="login" width="60%" style="font-size:16px;">
+            <tr>
+                <td>Tên đăng nhập(*)</td>
+                <td>
+                    <input class="form-control" type="text" name="TenDN" value="@ViewBag.tendn" />
+                </td>
+            </tr>
+            <tr>
+                <td>Mật khẩu(*)</td>
+                <td>
+                    <input class="form-control" type="password" name="Matkhau" value="@ViewBag.matkhau" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p class="text-danger text-center">
+                        @Html.ValidationMessage("dangnhap");
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input class="btn btn-primary" type="submit" name="submit" value="Đăng nhập" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br />
+    <div class="alert alert-warning">
+        Nếu chưa có tài khoản đăng kí <a href="@Url.Action("DangKi","DangNhap")">Tại đây</a>
+    </div>
+</div>
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")    
+}

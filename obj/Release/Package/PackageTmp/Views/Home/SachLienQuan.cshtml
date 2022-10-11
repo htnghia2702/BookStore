@@ -1,0 +1,29 @@
+﻿@model  IEnumerable<BookStore.Models.Sach>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <b>SÁCH CÙNG CHỦ ĐỀ</b>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-3">
+                    <div class="panel panel-default text-center">
+                        <a href="@Url.Action("ChiTiet", new { MaSach = item.MaSach })">
+                            <div class="panel-body " style="height:200px">
+                                <img src="~/Bia_sach/@item.AnhBia" width="100" height="150" alt="Alternate Text" />
+                                <h5>@item.TenSach</h5>
+                            </div>
+                        </a>
+                        <div class="panel-footer">
+                            Giá bán: <span style="color:red;font-weight:bold;">
+                                @Html.FormatValue(item.Dongia, "{0: #,##0} đồng")
+                                <a href="@Url.Action("ChiTiet", new { MaSach = item.MaSach })" class="btn btn-success">Chi tiết</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+﻿@model BookStore.Models.Sach
+@using BookStore.Models
+@{
+    ViewBag.Title = "Cập nhật";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    QLSachBD db = new QLSachBD();
+}
+
+<h2>CẬP NHẬT SÁCH</h2>
+<hr />
+<form action="@Url.Action("CapNhat","Admin")" enctype="multipart/form-data" method="post">
+    <table class="tblThem" width="500">
+        <tr>
+            <td>Tên Sách</td>
+            <td>
+                <input type="hidden" name="MaSach" value="@Model.MaSach" />
+                @Html.TextBoxFor(t => t.TenSach, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.TenSach, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td>Chủ đề</td>
+            <td>
+                <select class="form-control" name="MaCD">
+                    @foreach (var item in db.ChuDes)
+                    {
+                        if (Model.MaCD == item.MaCD)
+                        {
+                          <option selected value="@item.MaCD">@item.Tenchude</option>
+                        }
+                        <option value="@item.MaCD">@item.Tenchude</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Nhà xuất bản</td>
+            <td>
+                <select class="form-control" name="MaNXB">
+                    @foreach (var item in db.NhaXuatBans)
+                    {
+                        if (Model.MaNXB == item.MaNXB)
+                        {
+                            <option selected value="@item.MaNXB">@item.TenNXB</option>
+                        }
+                        <option value="@item.MaNXB">@item.TenNXB</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Đơn giá</td>
+            <td>
+                @Html.TextBoxFor(t => t.Dongia, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Dongia, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td>Mô tả</td>
+            <td>
+                @Html.TextBoxFor(t => t.Mota, new { @class = "form-control" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>Ảnh bìa</td>
+            <td>
+                <input class="form-control" type="file" name="AnhBia" value="" />
+                @Html.ValidationMessage("loi", new { @class = "text-danger" })
+                <img src="~/Bia_sach/@Model.AnhBia" width="100" alt="Alternate Text" />
+            </td>
+        </tr>
+        <tr >
+            <td></td>
+            <td style="padding:20px 0;">
+                <button class="btn btn-success">Lưu</button>
+            </td>
+        </tr>
+    </table>
+</form>
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
